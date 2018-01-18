@@ -1,0 +1,14 @@
+[package]
+name = "rustris"
+version = "0.1.0"
+authors = ["Tom Richardson <tgrkzus@gmail.com>"]
+
+[dependencies]
+piston_window = "*"
+piston2d-opengl_graphics = "*"
+piston2d-graphics = "*"
+gfx = "*"
+specs = "*"
+cgmath = "*"
+log = "*"
+log4rs = "0.7.0"
