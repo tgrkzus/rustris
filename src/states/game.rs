@@ -9,14 +9,10 @@ use piston_window;
 
 use components::render::SpriteComponent;
 use components::transform::TransformComponent;
-use components::controller::{WorkerControlComponent};
-use components::team::{TeamComponent, Team};
-use components::task::{TaskCreatorComponent, Task, TaskManager};
 use components::pickable::PickableComponent;
 
 use systems::render::SpriteRenderSystem;
 use systems::game_controller::GameControllerSystem;
-use systems::worker_controller::{WorkerProcessSystem, WorkerTaskSystem};
 use systems::picking::PickingSystem;
 
 use render::{Renderer, RenderCommandQueue};
@@ -41,14 +37,10 @@ impl<'a> Game<'a> {
         world.add_resource(RenderCommandQueue::new());
         world.add_resource(InputController::new());
         world.add_resource(Camera::new());
-        world.add_resource(TaskManager::new());
 
         // Register
         world.register::<SpriteComponent>();
         world.register::<TransformComponent>();
-        world.register::<WorkerControlComponent>();
-        world.register::<TeamComponent>();
-        world.register::<TaskCreatorComponent>();
         world.register::<PickableComponent>();
 
         // Rendering has to be thread local and seperate from simulation
@@ -58,9 +50,7 @@ impl<'a> Game<'a> {
 
         let mut sim_dispatch = DispatcherBuilder::new()
             .add(GameControllerSystem, "game_controller_system", &[])
-            .add(WorkerTaskSystem, "worker_task_system", &[])
-            .add(WorkerProcessSystem, "worker_process_system", &["worker_task_system"])
-            .add(PickingSystem, "picking_system", &["worker_process_system"])
+            .add(PickingSystem, "picking_system", &[])
             .build();
 
         world
@@ -77,9 +67,6 @@ impl<'a> Game<'a> {
                     Vector2::new(0.25, 0.25),
                 )
             })
-            .with(TeamComponent { team: Team::Player })
-            .with(WorkerControlComponent::new() )
-            .with(TaskCreatorComponent { task_id: None })
             .with(PickableComponent { size: Vector2::new(50, 50) })
             .build();
 
